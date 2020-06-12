@@ -14,10 +14,9 @@ logger.addHandler(ch)
 
 
 class SpeechBridge:
-    def __init__(self, streaming_config, number):
+    def __init__(self, streaming_config):
         self.buff = queue.Queue()
         self.ended = False
-        self.number = number
         self.streaming_config = streaming_config
         self.client = speech.SpeechClient()
         self.start()
@@ -57,11 +56,8 @@ class SpeechBridge:
 
             transcript = result.alternatives[0].transcript
             overwrite_chars = ' ' * (num_chars_printed - len(transcript))
-            logger.info("hellow bitches")
             if not result.is_final:
                 print(transcript)
-                # sys.stdout.write(transcript + overwrite_chars + '\r')
-                # sys.stdout.flush()
                 num_chars_printed = len(transcript)
             else:
                 print(transcript + overwrite_chars)

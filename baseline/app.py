@@ -6,9 +6,9 @@ from flask_sockets import Sockets
 from google.cloud.speech import enums, types
 
 from bridge import SpeechBridge
-from twiml_utils import generate_twiml
+from utils import generate_twiml
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./creds.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./voicemailtt-baseline.json"
 
 HTTP_SERVER_PORT = int(os.environ["PORT"])
 RATE = 8000
@@ -34,9 +34,10 @@ def after_request_func(response):
 @app.route('/twiml', methods=['POST', 'GET'])
 def return_twiml_primary():
     print("webhook detected inbound call")
-    print("rendering twiml")
+    print("generating twiml instructions")
     xml = generate_twiml()
     return xml
+
 
 # expose twiml for call handling through webhook
 @app.route('/healthcheck', methods=['POST', 'GET'])
@@ -60,18 +61,15 @@ streaming_config = types.StreamingRecognitionConfig(
 
 @sockets.route('/stream')
 def transcribe_inbound(ws):
-    print("WS connection opened for primary inbound track")
+    print("WS connection opened")
     print("Connection accepted")
     # instancie speech_Bridge
-    bridge_i = SpeechBridge(
-        streaming_config,
-        os.environ["TWILIO_PRIMARY_PHONE"]
-    )
+    bridge = SpeechBridge(streaming_config)
     print("transcoder instanciation done")
     while not ws.closed:
         message = ws.receive()
         if message is None:
-            bridge_i.shutdown()
+            bridge.shutdown()
             print("message is None")
             break
         data = json.loads(message)
@@ -81,13 +79,12 @@ def transcribe_inbound(ws):
         if data["event"] == "media":
             media = data["media"]
             chunk = base64.b64decode(media["payload"])
-            bridge_i.fill_buffer(chunk)
+            bridge.fill_buffer(chunk)
         if data["event"] == "stop":
             print(f"Media WS: Received event 'stop': {message}")
-            bridge_i.shutdown()
+            bridge.shutdown()
             print("Stopping...")
             break
-
 
 
 if __name__ == '__main__':
