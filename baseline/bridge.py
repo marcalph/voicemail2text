@@ -19,6 +19,7 @@ class SpeechBridge:
         self.ended = False
         self.streaming_config = streaming_config
         self.client = speech.SpeechClient()
+        self.transcript = ""
         self.start()
 
     def start(self):
@@ -57,10 +58,11 @@ class SpeechBridge:
             transcript = result.alternatives[0].transcript
             overwrite_chars = ' ' * (num_chars_printed - len(transcript))
             if not result.is_final:
-                print(transcript)
+                # print(transcript)
                 num_chars_printed = len(transcript)
             else:
                 print(transcript + overwrite_chars)
+                self.transcript += transcript
                 num_chars_printed = 0
             if self.ended:
                 break

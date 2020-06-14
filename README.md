@@ -13,6 +13,7 @@ after completion voicemail is forwarder under text form through SMS
 
 - [x] baseline::purchase number
 - [x] baseline::handle transcription
+- [ ] baseline::add sms capability
 - [ ] baseline::forward voicemails
 - [ ] baseline::expose service
 - [ ] baseline::test

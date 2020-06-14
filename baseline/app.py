@@ -6,7 +6,7 @@ from flask_sockets import Sockets
 from google.cloud.speech import enums, types
 
 from bridge import SpeechBridge
-from utils import generate_twiml
+from utils import generate_twiml, send_sms
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./voicemailtt-baseline.json"
 
@@ -59,6 +59,9 @@ streaming_config = types.StreamingRecognitionConfig(
     interim_results=True)
 
 
+
+import time
+
 @sockets.route('/stream')
 def transcribe_inbound(ws):
     print("WS connection opened")
@@ -83,8 +86,13 @@ def transcribe_inbound(ws):
         if data["event"] == "stop":
             print(f"Media WS: Received event 'stop': {message}")
             bridge.shutdown()
-            print("Stopping...")
+            time.sleep(15)
             break
+
+    print("send SMS")
+    print(bridge.transcript)
+    send_sms(bridge.transcript, os.environ["MY_NUMBER"])
+    print("Stopping...")
 
 
 if __name__ == '__main__':
