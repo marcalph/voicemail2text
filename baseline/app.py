@@ -7,6 +7,8 @@ from google.cloud.speech import enums, types
 
 from bridge import SpeechBridge
 from utils import generate_twiml, send_sms
+from dotenv import load_dotenv
+load_dotenv()
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./voicemailtt-baseline.json"
 

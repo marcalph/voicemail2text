@@ -2,6 +2,8 @@ from twilio.twiml.voice_response import VoiceResponse, Start
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 call_duration = 20
 

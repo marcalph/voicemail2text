@@ -3,5 +3,6 @@ flask
 gunicorn
 gevent
 flask-sockets
-google-cloud-speech
-twilio
+google-cloud-speech==1.3.2
+twilio==6.38.1
+python-dotenv==0.14.0
