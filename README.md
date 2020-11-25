@@ -1,5 +1,5 @@
 # voicemail2text
-voicemail transcription through stt because voicemails...
+voicemail transcription because... well voicemails
 
 
 ## how it works
